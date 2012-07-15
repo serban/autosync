@@ -1,0 +1,15 @@
+Keep a directory synchronized with a remote server in real time
+
+Requires Mac OS X and MacFSEvents. Get started in three steps:
+
+1. Install the requirements:
+
+    $ pip install -r requirements.txt
+
+2. Edit PATH, REMOTE_HOST, and REMOTE_PATH:
+
+    $ vim autosync.py
+
+3. Run it:
+
+    $ python autosync.py
