@@ -26,6 +26,7 @@
 import fsevents
 import os.path
 import Queue
+import re
 import subprocess
 import threading
 
@@ -56,8 +57,12 @@ def schedule_sync():
         pass
 
 
-def fs_event_callback(path, mask):
+def fs_event_callback(file_event):
     global timer
+
+    # Ignore changes to Vim swap files
+    if re.match('\..*\.swp', os.path.basename(file_event.name)):
+        return
 
     if timer and timer.is_alive():
         timer.cancel()
@@ -73,7 +78,7 @@ def fs_event_callback(path, mask):
 observer = fsevents.Observer()
 observer.start()
 
-stream = fsevents.Stream(fs_event_callback, PATH)
+stream = fsevents.Stream(fs_event_callback, PATH, file_events=True)
 observer.schedule(stream)
 
 if __name__ == '__main__':
