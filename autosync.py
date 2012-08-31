@@ -36,7 +36,7 @@ REMOTE_PATH = os.path.normpath('~/stage')
 SYNC_COMMAND = "rsync --archive --hard-links --delete --verbose --human-readable --progress " + \
                "--exclude='.*.swp' -e ssh " + PATH + "/ " + REMOTE_HOST + ":" + REMOTE_PATH
 
-queue = Queue.Queue()
+queue = Queue.Queue(maxsize=1)
 timer = None
 
 def sync():
@@ -50,7 +50,10 @@ def process_queue(queue):
 
 
 def schedule_sync():
-    queue.put(True)
+    try:
+        queue.put(True, block=False)
+    except Queue.Full:
+        pass
 
 
 def fs_event_callback(path, mask):
